@@ -7,17 +7,27 @@ import About from './Components/About';
 import Contact from './Components/Contact';
 import Menuitems from './Components/Menu-items';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-;
+import UserContext from './config/userContext.js';
+import { useState, useEffect } from 'react';
 
 
 const Grocery = lazy( () => import('./Components/Grocery.jsx'));
 
 const AppLayout = () => {
-  return(
-    <div className = 'App'>
-      <Header />
-      <Outlet />
-    </div>
+  const [userName, setUserName] = useState('null')
+
+  useEffect(() => {
+    setUserName('Mike Tyson');
+  } ,[]) 
+    return(
+      <UserContext.Provider value = {{defaultUser: userName, setUserName}}>
+      <div className = 'App'>
+        {/* <UserContext.Provider value = {{defaultUser: userName}}> */}
+        <Header />
+        {/* </UserContext.Provider> */}
+        <Outlet />
+      </div>
+      </UserContext.Provider>
   )
 }
 

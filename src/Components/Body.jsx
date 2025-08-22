@@ -1,13 +1,15 @@
 import Cards from "./Restaurant-cards"
-import { useState } from "react";
+import { useState, useContext } from "react";
 import ShimmerUi from "./ShimmerUi";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../config/useOnlineStatus";
 import useMainFetch from "../config/useMainFetch";
+import UserContext from "../config/userContext";
 
 const Body = () => {
 
   const [searchText , setSearchText] = useState('');
+  // const RestaurantCardPromoted = WithPromotedLabel(Cards);
 
   const onlineStatus = useOnlineStatus();
   if (!onlineStatus){
@@ -15,6 +17,9 @@ const Body = () => {
   }
 
   const {restaurantList, filtered, setFiltered} = useMainFetch();
+  const {setUserName, defaultUser} = useContext(UserContext);
+  // console.log(restaurantList);
+  
   return restaurantList.length === 0 ? (
     <ShimmerUi /> 
     ) : (
@@ -28,7 +33,7 @@ const Body = () => {
           } />
           <button className='border-2 px-4 py-1 cursor-pointer' onClick = { () => {
             const filteredData = restaurantList.filter((restaurant)=>
-              restaurant.info.name.toLowerCase().includes(searchText.toLowerCase())
+              restaurant.info.toLowerCase().includes(searchText.toLowerCase())
             );
             setFiltered(filteredData);
           }}>Search</button>
@@ -42,11 +47,15 @@ const Body = () => {
             Top Rated Restaurants</button>
           {/* <button className='filter-btn'>Pure Veg</button> */}
         </div>
+        <div>
+          <label>Context Value : </label>
+          <input className="border border-black p-1.5" value={defaultUser} onChange={(e)=> setUserName(e.target.value)}/>
+        </div>
       </div>
 
         <div className="flex flex-wrap justify-center gap-7 mx-30">
           {filtered?.map((res) => (
-            <Link key={res.info.id} to={'/restaurants/'+ res.info.id }><Cards resList={res} /></Link>
+            <Link key={res.info.id} to={'/restaurants/'+ res.info.id }><Cards {...res} /></Link>
           ))}
         </div>
       </div>
